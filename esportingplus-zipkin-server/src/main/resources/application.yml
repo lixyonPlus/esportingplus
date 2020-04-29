@@ -1,0 +1,260 @@
+server:
+  port: 8383
+  undertow:
+    # Size of each buffer in bytes.
+    buffer-size: 1024
+    # Allocate buffers outside the Java heap. The default is derived from the maximum amount of memory that is available to the JVM.
+    direct-buffers: true
+    # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
+    io-threads: 16
+    # Number of worker threads. The default is 8 times the number of I/O threads.
+    worker-threads: 256
+
+spring:
+  application:
+    name: esportingplus-zipkin-server
+  profiles:
+    active: @profile.env@
+
+management:
+  security:
+    enabled: false
+
+security:
+  user:
+    name: admin
+    password: ${USER_SERVICE_PASSWORD:admin}
+
+---
+spring:
+  profiles: dev
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: 120.77.146.135:9200
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: localhost:2181
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: test
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: test2
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: test3
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: grey
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: load
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: grey2
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 5
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: prod
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 1
+          topic: zipkin-esportingplus
+          group-id: zipkin
+
+---
+spring:
+  profiles: prod2
+  sleuth:
+    enabled: false
+
+zipkin:
+  sleuth:
+    enabled: false
+  sampler:
+    percentage: 1.0
+  storage:
+    StorageComponent: elasticsearch
+    type: elasticsearch
+    elasticsearch:
+      hosts: ${elasticsearch.hosts}
+      index: zipkin-esportingplus
+      #index-shards: 1
+      #index-replicas: 1
+  collector:
+      kafka:
+          zookeeper: ${zookeeper.hosts}
+          streams: 1
+          topic: zipkin-esportingplus
+          group-id: zipkin

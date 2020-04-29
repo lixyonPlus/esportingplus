@@ -1,0 +1,420 @@
+version: '3.4'
+services:
+  eurekaserver1:
+    image: esportingplus/esportingplus-eureka-server:1.0.0-SNAPSHOT
+    hostname: eurekaserver1
+    #container_name: eurekaserver1
+    ports:
+      - "8761:8761"
+    deploy:
+       replicas: 1
+       # @see https://docs.docker.com/compose/compose-file/#restart_policy
+       restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+       # @see https://docs.docker.com/compose/compose-file/#resources
+       resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - "eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/"
+
+  configserver:
+    image: esportingplus/esportingplus-config-server:1.0.0-SNAPSHOT
+    ports:
+      - "8888:8888"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+    volumes:
+      - "/data/config/esportingplus/esportingplus-config-server/config-repo:/data/config/esportingplus/esportingplus-config-server/config-repo"
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=native,dev
+      - spring.cloud.config.server.native.search-locations=file:///data/config/esportingplus/esportingplus-config-server/config-repo
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+      - eureka.instance.ip-address=120.77.146.135
+
+  userservice:
+    image: esportingplus/esportingplus-user-service:1.0.0-SNAPSHOT
+    ports:
+      - "9002:9002"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  liveservice:
+    image: esportingplus/esportingplus-live-service:1.0.0-SNAPSHOT
+    ports:
+      - "9006:9006"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  paymentservice:
+    image: esportingplus/esportingplus-payment-service:1.0.0-SNAPSHOT
+    ports:
+    - "9005:9005"
+    - "5005:5005"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    depends_on:
+    - eurekaserver1
+    - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+    - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n
+    - spring.profiles.active=dev
+    - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  resourceservice:
+    image: esportingplus/esportingplus-resource-service:1.0.0-SNAPSHOT
+    ports:
+      - "9003:9003"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  tradeservice:
+    image: esportingplus/esportingplus-trade-service:1.0.0-SNAPSHOT
+    ports:
+      - "9004:9004"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  gamingteamservice:
+    image: esportingplus/esportingplus-gamingteam-service:1.0.0-SNAPSHOT
+    ports:
+      - "9000:9000"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  customercenterservice:
+    image: esportingplus/esportingplus-customer-center-service:1.0.0-SNAPSHOT
+    ports:
+      - "9001:9001"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  authserver:
+    image: esportingplus/esportingplus-auth-server:1.0.0-SNAPSHOT
+    ports:
+      - "8090:8090"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  gatewayserver:
+    image: esportingplus/esportingplus-gateway-server:1.0.0-SNAPSHOT
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  backendgatewayserver:
+    image: esportingplus/esportingplus-backend-gateway-server:1.0.0-SNAPSHOT
+    ports:
+      - "8181:8181"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  riskratingservice:
+    image: esportingplus/esportingplus-risk-rating-service:1.0.0-SNAPSHOT
+    ports:
+      - "9012:9012"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  hystrixdashboardserver:
+    image: esportingplus/esportingplus-hystrix-dashboard-server:1.0.0-SNAPSHOT
+    ports:
+      - "8282:8282"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    depends_on:
+      - eurekaserver1
+      - configserver
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - spring.profiles.active=dev
+      - eureka.client.service-url.defaultZone=http://admin:admin@eurekaserver1:8761/eureka/
+
+  zipkinserver:
+    image: esportingplus/esportingplus-zipkin-server:1.0.0-SNAPSHOT
+    ports:
+      - "8383:8383"
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 5s
+         max_attempts: 3
+         window: 120s
+      resources:
+         limits:
+           cpus: '0.50'
+           memory: 1024M
+         reservations:
+           cpus: '0.25'
+           memory: 512M
+    volumes:
+      - "/logs:/logs"
+    environment:
+      - JAVA_OPTS=-Xmx512M -Xms512M -Xmn128M
+      - elasticsearch.hosts=120.77.146.135:9300
+      - zookeeper.hosts=localhost:2181

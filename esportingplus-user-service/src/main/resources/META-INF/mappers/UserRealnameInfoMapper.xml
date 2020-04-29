@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.esportingplus.user.data.repository.UserRealnameInfoRepository">
+    <resultMap id="BaseResultMap" type="com.panda.esportingplus.user.domain.entity.UserRealnameInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="chicken_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="idcard_type" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+            <arg column="realname" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="gender" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+            <arg column="idcard_number" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="idcard_front_picture" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="face_idcard_verify_picture" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="verify_type" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+            <arg column="verify_status" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+            <arg column="verify_remark" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="is_blacklist" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="is_deleted" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="update_user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="update_user_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="verify_user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="verify_user_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="verify_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="delete_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="update_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+
+
+    <select id="getUserRealnameInfoByUid" resultMap="BaseResultMap">
+    SELECT
+	*
+    FROM
+        user_realname_info t
+    WHERE
+        t.uid = #{uid}
+    AND t.is_deleted = 0
+    AND t.verify_status = 1 limit 1
+  </select>
+
+    <select id="getLastUserRealnameInfoByUid" resultMap="BaseResultMap">
+    SELECT
+	*
+    FROM
+        user_realname_info t
+    WHERE
+        t.uid = #{uid}
+    AND t.is_deleted = 0
+    ORDER BY t.create_datetime desc limit 1
+  </select>
+
+    <select id="getUserRealnameInfoRecordByUid" resultMap="BaseResultMap">
+    SELECT
+	*
+    FROM
+        user_realname_info t
+    WHERE
+        t.uid = #{uid}
+    AND t.is_deleted = 0
+    AND t.verify_status in (0,1)
+  </select>
+
+    <select id="getUserRealnameInfoByIdcardNumber" resultMap="BaseResultMap">
+    SELECT
+	*
+    FROM
+        user_realname_info t
+    WHERE
+        t.idcard_number = #{idcardNumber}
+    AND t.is_deleted = 0
+    AND t.verify_status in (0,1)  limit 1
+  </select>
+
+    <select id="getUserRealnameList" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        user_realname_info t
+        WHERE t.is_deleted = 0
+        <if test="queryParameterType == 0 and queryParameterValue!=null and queryParameterValue!=''">
+            and t.chicken_id = #{queryParameterValue}
+        </if>
+        <if test="queryParameterType == 1 and queryParameterValue!=null and queryParameterValue!=''">
+            and t.uid = #{queryParameterValue}
+        </if>
+        <if test="queryParameterType == 2 and queryParameterValue!=null and queryParameterValue!=''">
+            and t.realname = #{queryParameterValue}
+        </if>
+        <if test="queryParameterType == 3 and queryParameterValue!=null and queryParameterValue!=''">
+            and t.idcard_number = #{queryParameterValue}
+        </if>
+        <if test="verifyStatus!=null and verifyStatus!=3">
+            and t.verify_status = #{verifyStatus}
+        </if>
+        <if test="isBlacklist!=null">
+            and t.is_blacklist = #{isBlacklist}
+        </if>
+        <if test="verifyType!=null">
+            and verify_type = #{verifyType}
+        </if>
+    </select>
+
+    <update id="updateVerifyStatusById">
+    UPDATE user_realname_info t
+    SET t.verify_status = #{verifyStatus},
+     t.verify_remark = #{verifyRemark},
+     t.verify_user_id = #{verifyUserId},
+     t.verify_user_name = #{verifyUserName},
+     t.verify_datetime = NOW()
+    WHERE
+        t.id = #{id}
+  </update>
+
+    <update id="updateIsBlackListById">
+        update user_realname_info t
+        set t.is_blacklist = #{isBlackList},
+          t.update_user_id = #{updateUserId},
+          t.update_user_name = #{updateUserName},
+          t.update_datetime = NOW()
+        where t.id = #{id}
+    </update>
+
+    <update id="unBindRealNameInfoById">
+        update user_realname_info t
+        set t.is_deleted = true,
+          t.update_user_id = #{updateUserId},
+          t.update_user_name = #{updateUserName},
+          t.delete_datetime = NOW()
+        where t.id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,464 @@
+server:
+  port: 8888
+  # {@link https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/Undertow.java}
+  undertow:
+    # Size of each buffer in bytes.
+    buffer-size: 1024
+    # Allocate buffers outside the Java heap. The default is derived from the maximum amount of memory that is available to the JVM.
+    direct-buffers: true
+    # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
+    io-threads: 16
+    # Number of worker threads. The default is 8 times the number of I/O threads.
+    worker-threads: 256
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native,@profile.env@
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+management:
+  security:
+    enabled: false
+
+security:
+  user:
+    name: admin
+    password: ${CONFIG_SERVER_PASSWORD:admin}
+
+---
+spring:
+  profiles: native,dev
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: classpath:/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: http://${security.user.name}:${security.user.password}@localhost:8761/eureka/
+
+---
+spring:
+  profiles: native,test
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://qinliuqing@gl.kaiheikeji.com:3700/qinliuqing/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,test2
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://qinliuqing@gl.kaiheikeji.com:3700/qinliuqing/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+
+---
+spring:
+  profiles: native,test3
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://qinliuqing@gl.kaiheikeji.com:3700/qinliuqing/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,grey
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,load
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,grey2
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,grey3
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: native,prod
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+
+---
+spring:
+  profiles: native,prod2
+  cloud:
+    config:
+      server:
+        git:
+          #1.配置git仓库地址
+          uri: http://xxx/esportingplus-config.git
+          #配置仓库路径
+          searchPaths: config-repo
+          #访问git仓库的用户名
+          #username:
+          #访问git仓库的用户密码
+          #password:
+          label: @profile.env@
+        fail-fast: true
+        #2.读取本地配置目录
+        native:
+          search-locations: file:///data/config/esportingplus/esportingplus-config-server/config-repo
+          addLabelLocations: true
+          default-label: @profile.env@
+
+eureka:
+  instance:
+    #hostname: ${spring.cloud.client.ipAddress}
+    #prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+    #过期时间配置:超过这个时间，EurekaServer没有接收到心跳，EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，
+    #这个配置一般为服务刷新时间配置的三倍 默认90s
+    lease-expiration-duration-in-seconds: 15
+    #服务刷新时间配置，每隔这个时间会主动心跳一次 默认30s
+    lease-renewal-interval-in-seconds: 5
+  client:
+    #eureka client刷新本地缓存时间 默认30s
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}

@@ -1,0 +1,168 @@
+server:
+  port: 8761
+  # {@link https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/Undertow.java}
+  undertow:
+    # Size of each buffer in bytes.
+    buffer-size: 1024
+    # Allocate buffers outside the Java heap. The default is derived from the maximum amount of memory that is available to the JVM.
+    direct-buffers: true
+    # Number of I/O threads to create for the worker. The default is derived from the number of available processors.
+    io-threads: 16
+    # Number of worker threads. The default is 8 times the number of I/O threads.
+    worker-threads: 256
+
+security:
+  basic:
+    enabled: true # 启用访问Eureka Server用户认证
+  user:
+    name: admin
+    password: ${EUREKA_SERVER_PASSWORD:admin}
+
+logging:
+  level:
+    org: info
+    com.netflix: error
+    springfox: error
+    com.esportingplus: debug
+  register-shutdown-hook: false
+
+spring:
+  application:
+    name: registry
+  profiles:
+    active: @profile.env@
+
+
+#management:
+#  security:
+#    enabled: false
+#  health:
+#    rabbit:
+#      enabled: false
+
+---
+spring:
+  profiles: dev
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${security.user.name}:${security.user.password}@localhost:${server.port}/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    #hostname: localhost
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: test
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    #hostname: ${hostname}
+    prefer-ip-address: true  #该配置为true表示注册到eureka上的是IP，如果这样，eureka服务器就不能通过服务器发现Replicas。
+                             #故如果想通过docker实现eureka高可用，该配置最好使用默认值（false）
+                             #此处配置为true且实现高可用，则每个eureka服务需映射到docker环境外且知道ip。
+---
+spring:
+  profiles: test2
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    #hostname: ${hostname}
+    prefer-ip-address: true  #该配置为true表示注册到eureka上的是IP，如果这样，eureka服务器就不能通过服务器发现Replicas。
+    #故如果想通过docker实现eureka高可用，该配置最好使用默认值（false）
+    #此处配置为true且实现高可用，则每个eureka服务需映射到docker环境外且知道ip。
+
+---
+spring:
+  profiles: test3
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    #hostname: ${hostname}
+    prefer-ip-address: true  #该配置为true表示注册到eureka上的是IP，如果这样，eureka服务器就不能通过服务器发现Replicas。
+    #故如果想通过docker实现eureka高可用，该配置最好使用默认值（false）
+    #此处配置为true且实现高可用，则每个eureka服务需映射到docker环境外且知道ip。
+
+---
+spring:
+  profiles: grey
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: load
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: grey2
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: grey3
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: prod
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: prod2
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+  instance:
+    prefer-ip-address: true

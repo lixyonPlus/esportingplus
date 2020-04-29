@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--导入属性配置-->
+    <properties resource="generator.properties"></properties>
+
+    <!--指定特定数据库的jdbc驱动jar包的位置-->
+    <!--<classPathEntry location="${jdbc.driverLocation}"/>-->
+
+    <context id="default" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="${common.baseMapper}"/>
+            <property name="caseSensitive" value="true"/>
+        </plugin>
+        <!-- optional，旨在创建class时，对注释进行控制 -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--jdbc的数据库连接 -->
+        <jdbcConnection
+                driverClass="${jdbc.driverClass}"
+                connectionURL="${jdbc.connectionURL}"
+                userId="${jdbc.userId}"
+                password="${jdbc.password}">
+        </jdbcConnection>
+
+        <!-- 非必需，类型处理器，在数据库类型和java类型之间的转换控制-->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--Mapper 类生成所在的目录-->
+        <javaModelGenerator targetPackage="com.kaihei.esportingplus.user.domain.entity"
+                            targetProject="src/main/java">
+
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否对model添加 构造函数 -->
+            <property name="constructorBased" value="true"/>
+            <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
+            <property name="trimStrings" value="true"/>
+            <!-- 建立的Model对象是否 不可改变  即生成的Model对象不会有 setter方法，只有构造方法 -->
+            <property name="immutable" value="false"/>
+        </javaModelGenerator>
+
+        <!--Mapper XML映射文件生成所在的目录-->
+        <!--<sqlMapGenerator targetPackage="META-INF/mappers"-->
+                         <!--targetProject="src/main/resources">-->
+        <!--</sqlMapGenerator>-->
+
+        <!--Mapper 类生成所在的目录-->
+        <!--<javaClientGenerator targetPackage="com.kaihei.esportingplus.user.data.repository"-->
+                             <!--targetProject="src/main/java" type="XMLMAPPER">-->
+        <!--</javaClientGenerator>-->
+
+        <!--tableName:指定了表名
+            domainObjectName:指定了实体类的名称
+        -->
+        <table tableName="baoji_order_collect" domainObjectName="BaojiOrderCollect"
+          enableCountByExample="false" enableUpdateByExample="false"
+          enableDeleteByExample="false" enableSelectByExample="false"
+          selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <columnOverride column="game_id" javaType="java.lang.Integer" />
+            <columnOverride column="order_type" javaType="java.lang.Integer" />
+        </table>
+        <table tableName="baoji_week_order_statistics" domainObjectName="BaojiWeekOrderStatistics"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <columnOverride column="game_id" javaType="java.lang.Integer" />
+            <columnOverride column="order_type" javaType="java.lang.Integer" />
+        </table>
+        <table tableName="baoji_level_score_change_record" domainObjectName="BaojiLevelScoreChangeRecord"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <columnOverride column="game_id" javaType="java.lang.Integer" />
+            <columnOverride column="change_item_type" javaType="java.lang.Integer" />
+        </table>
+        <table tableName="baoji_level_score" domainObjectName="BaojiLevelScore"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <columnOverride column="game_id" javaType="java.lang.Integer" />
+        </table>
+        <!--<table tableName="check_detail" domainObjectName="CheckDetail"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <columnOverride column="result" javaType="java.lang.Integer" />
+            &lt;!&ndash;<columnOverride column="frozen_status" javaType="java.lang.Integer" />&ndash;&gt;
+            &lt;!&ndash;<columnOverride column="type" javaType="java.lang.Integer" />&ndash;&gt;
+        </table>
+        <table tableName="game_status_switch" domainObjectName="GameStatusSwitch"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            &lt;!&ndash;<columnOverride column="audit_status" javaType="java.lang.Integer" />&ndash;&gt;
+            &lt;!&ndash;<columnOverride column="type" javaType="java.lang.Integer" />&ndash;&gt;
+        </table>-->
+        <!--<table tableName="baoji_margin_order" domainObjectName="BaoJiMarginOrder"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+            <!--<generatedKey column="id" sqlStatement="JDBC"/>-->
+            <!--<columnOverride column="order_type" javaType="java.lang.Integer" />-->
+            <!--<columnOverride column="status" javaType="java.lang.Integer" />-->
+        <!--</table>-->
+<!--        <table tableName="baoji_gamestudiobaoji" domainObjectName="UserBaoNiang"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
+        <!--<table tableName="members_user_task_award_order" domainObjectName="MembersUserTaskAwardOrder"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+            <!--<generatedKey column="id" sqlStatement="JDBC"/>-->
+            <!--<columnOverride column="award_type" javaType="java.lang.Integer" />-->
+        <!--</table>-->
+        <!--<table tableName="members_user_task_accumualte_history" domainObjectName="MembersUserTaskAccumualteHistory"-->
+          <!--enableCountByExample="false" enableUpdateByExample="false"-->
+          <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+          <!--selectByExampleQueryId="false">-->
+            <!--<generatedKey column="id" sqlStatement="JDBC"/>-->
+            <!--<columnOverride column="type" javaType="java.lang.Integer" />-->
+        <!--</table>-->
+        <!--<table tableName="user_game_role" domainObjectName="UserGameRole">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
+
+        <!--<table tableName="user_game_role_credential" domainObjectName="UserGameRoleCredential">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>-->
+
+    </context>
+</generatorConfiguration>
