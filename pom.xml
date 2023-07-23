@@ -46,7 +46,7 @@
         <spring-framework.version>4.3.6.RELEASE</spring-framework.version>
         <srping.boot.logger.version>1.5.2.RELEASE</srping.boot.logger.version>
         <guava.version>18.0</guava.version>
-        <logback.version>1.2.1</logback.version>
+        <logback.version>1.2.9</logback.version>
         <logback.janino.version>3.0.8</logback.janino.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <dozer.version>5.5.1</dozer.version>
